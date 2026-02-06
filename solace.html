@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Under the Same Stars</title>
+  <link rel="stylesheet" href="solace.css">
+  <link rel="icon" type="image/png" href="icon.png">
+</head>
+<body>
+  <!-- PARALLAX SCENE -->
+  <section class="parallax-scene">
+    <canvas id="bg-stars"></canvas> <!-- Background stars -->
+    <div class="interactive-stars" aria-hidden="true">
+      <div class="star star-hidden" style="top: 18%; left: 15%;" tabindex="0" data-star-index="1">
+        <span class="message">Still the best picture we have.
+          <img src="Image.jpg" alt="Star memory 1">
+        </span>
+      </div>
+      <div class="star star-hidden" style="top: 32%; left: 70%;" tabindex="0" data-star-index="2">
+        <span class="message">My favorite picture of you.
+          <img src="Image1.jpg" alt="Star memory 2">
+        </span>
+      </div>
+      <div class="star star-hidden" style="top: 55%; left: 35%;" tabindex="0" data-star-index="3">
+        <span class="message">We look cute together here.
+          <img src="Image2.jpg" alt="Star memory 3">
+        </span>
+      </div>
+      <div class="star star-hidden" style="top: 22%; left: 50%;" tabindex="0" data-star-index="4">
+        <span class="message">I can see us shopping for each other in the future.
+          <img src="Image3.jpg" alt="Star memory 4">
+        </span>
+      </div>
+      <div class="star star-hidden" style="top: 60%; left: 78%;" tabindex="0" data-star-index="5">
+        <span class="message">This day still holds a special place in my heart.
+          <img src="Image4.jpg" alt="Star memory 5">
+        </span>
+      </div>
+      <div class="star star-hidden" style="top: 42%; left: 18%;" tabindex="0" data-star-index="6">
+        <span class="message">Best day ever.
+          <img src="Image5.gif" alt="Star memory 6">
+        </span>
+      </div>
+      <div class="star star-hidden" style="top: 68%; left: 52%;" tabindex="0" data-star-index="7">
+        <span class="message">The pictures you take of me...
+          <img src="Image6.jpg" alt="Star memory 7">
+        </span>
+      </div>
+      <div class="star star-hidden" style="top: 40%; left: 82%;" tabindex="0" data-star-index="8">
+        <span class="message">Our first photo together.
+          <img src="Image7.jpg" alt="Star memory 8">
+        </span>
+      </div>
+    </div>
+    <div class="parallax-bg"></div>
+    <div class="parallax-fg">
+      <img src="US.png" alt="Us watching the stars">
+    </div>
+  </section>
+  <!-- Mouse trail -->
+  <canvas id="trail-stars"></canvas>
+  <div class="moon-timer" id="moon-timer" aria-live="polite"></div>
+  <div class="moon-toast" id="moon-toast" aria-live="polite"></div>
+  <button class="moon-button" type="button" aria-label="Moon button"></button>
+  <button class="mail-button" type="button" aria-label="Open mail">
+    <svg class="mail-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 6h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zm0 2v.2l8 4.8 8-4.8V8H4zm16 8V11l-8 4.8L4 11v5h16z"/>
+    </svg>
+  </button>
+  <div class="mail-panel" id="mail-panel" aria-hidden="true">
+    <h3>Messages</h3>
+    <ul id="mail-list"></ul>
+  </div>
+  <button class="debug-button" type="button" aria-label="Toggle stats panel">Stats</button>
+  <button class="reset-button" type="button" aria-label="Reset daily timer">Reset</button>
+  <div class="debug-panel" id="debug-panel" aria-hidden="true"></div>
+  <div class="daily-overlay" id="daily-overlay" aria-hidden="true">
+    <div class="daily-dialog" role="dialog" aria-modal="true" aria-labelledby="daily-title">
+      <h2 id="daily-title">Read today’s message?</h2>
+      <p id="daily-desc">You can open one message per day.</p>
+      <div class="daily-actions">
+        <button class="daily-btn primary" type="button" id="daily-open">Yes, show me</button>
+        <button class="daily-btn" type="button" id="daily-cancel">Not now</button>
+      </div>
+    </div>
+  </div>
+  <div class="essay-overlay" id="essay-overlay" aria-hidden="true">
+    <div class="essay-dialog" role="dialog" aria-modal="true" aria-labelledby="essay-title">
+      <h2 id="essay-title">Today’s Message</h2>
+      <div class="essay-content">
+        <img id="essay-image" alt="Daily memory">
+        <p id="essay-body"></p>
+      </div>
+      <div class="essay-actions">
+        <button class="daily-btn primary" type="button" id="essay-close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINAL MESSAGE BELOW -->
+  <section class="final-message">
+    <h1>This will forever be here</h1>
+    <p>January 14, 2025</p>
+    <div class="love-stream" aria-hidden="true"></div>
+  </section>
+
+  <script src="starfield.js"></script>
+</body>
+</html>
