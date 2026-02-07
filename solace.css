@@ -390,15 +390,62 @@ html, body {
   position: fixed;
   left: clamp(12px, 3vw, 24px);
   bottom: clamp(12px, 3vw, 24px);
-  padding: 6px 10px;
-  border-radius: 999px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.25);
   background: rgba(0, 0, 0, 0.35);
   color: #fff;
-  font-size: 0.8rem;
   cursor: pointer;
   z-index: 10008;
   backdrop-filter: blur(6px);
+  display: grid;
+  place-items: center;
+}
+
+.music-button {
+  position: fixed;
+  left: calc(clamp(12px, 3vw, 24px) + 52px);
+  bottom: clamp(12px, 3vw, 24px);
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  cursor: pointer;
+  z-index: 10008;
+  backdrop-filter: blur(6px);
+  display: grid;
+  place-items: center;
+}
+
+.debug-button .icon,
+.music-button .icon {
+  width: 60%;
+  height: 60%;
+  fill: #ffe9a6;
+  filter: drop-shadow(0 0 6px rgba(255, 233, 166, 0.6));
+}
+
+.debug-button:hover,
+.music-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 18px rgba(255, 233, 166, 0.35);
+}
+
+.music-button .icon-play {
+  display: none;
+}
+
+.music-button.is-paused .icon-pause {
+  display: none;
+}
+
+.music-button.is-paused .icon-play {
+  display: inline;
 }
 
 /*.reset-button {
@@ -564,6 +611,16 @@ body.modal-blur > *:not(.daily-overlay) {
 body.modal-blur > *:not(.daily-overlay):not(.essay-overlay) {
   filter: blur(6px);
   transition: filter 0.2s ease;
+}
+
+#bg-music {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
 }
 
 /* Mail button and panel */
