@@ -12,6 +12,97 @@ let height = bgCanvas.height = trailCanvas.height = window.innerHeight;
 let starsArray = [];
 let trailStars = [];
 
+// ----- Sound FX (Web Audio) -----
+let audioCtx = null;
+function getAudioCtx() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx.state === "suspended") {
+    audioCtx.resume();
+  }
+  return audioCtx;
+}
+
+function playTone({ freq = 440, duration = 0.08, type = "sine", gain = 0.03 }) {
+  const ctx = getAudioCtx();
+  const osc = ctx.createOscillator();
+  const amp = ctx.createGain();
+  osc.type = type;
+  osc.frequency.value = freq;
+  amp.gain.value = gain;
+  osc.connect(amp);
+  amp.connect(ctx.destination);
+  const now = ctx.currentTime;
+  amp.gain.setValueAtTime(gain, now);
+  amp.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+  osc.start(now);
+  osc.stop(now + duration + 0.01);
+}
+
+function playClickSound() {
+  playTone({ freq: 520, duration: 0.06, type: "triangle", gain: 0.035 });
+}
+
+function playHoverTick() {
+  playTone({ freq: 780, duration: 0.03, type: "square", gain: 0.02 });
+}
+
+function playShimmer() {
+  playTone({ freq: 920 + Math.random() * 160, duration: 0.04, type: "sine", gain: 0.015 });
+}
+
+// ----- Background music (YouTube embed, starts on first user gesture) -----
+const bgMusicHost = document.getElementById("bg-music");
+const bgMusicVideoId = "m_7gzTRMOZ8";
+function startBackgroundMusic() {
+  if (!bgMusicHost || document.getElementById("bg-music-iframe")) return;
+  const iframe = document.createElement("iframe");
+  iframe.id = "bg-music-iframe";
+  iframe.width = "1";
+  iframe.height = "1";
+  iframe.allow = "autoplay";
+  iframe.src =
+    `https://www.youtube.com/embed/${bgMusicVideoId}` +
+    `?autoplay=1&loop=1&playlist=${bgMusicVideoId}&controls=0&mute=0&playsinline=1&enablejsapi=1`;
+  bgMusicHost.appendChild(iframe);
+}
+
+window.addEventListener("click", startBackgroundMusic, { once: true });
+window.addEventListener("touchstart", startBackgroundMusic, { once: true });
+
+function sendYouTubeCommand(command) {
+  const iframe = document.getElementById("bg-music-iframe");
+  if (!iframe || !iframe.contentWindow) return;
+  iframe.contentWindow.postMessage(
+    JSON.stringify({ event: "command", func: command, args: [] }),
+    "*"
+  );
+}
+
+let musicPaused = false;
+const musicButton = document.querySelector(".music-button");
+if (musicButton) {
+  musicButton.addEventListener("click", () => {
+    playClickSound();
+    if (!document.getElementById("bg-music-iframe")) {
+      startBackgroundMusic();
+      musicPaused = false;
+      musicButton.classList.remove("is-paused");
+      return;
+    }
+    if (musicPaused) {
+      sendYouTubeCommand("playVideo");
+      musicPaused = false;
+      musicButton.classList.remove("is-paused");
+    } else {
+      sendYouTubeCommand("pauseVideo");
+      musicPaused = true;
+      musicButton.classList.add("is-paused");
+    }
+  });
+}
+
 // ----- Background Star Class -----
 class Star {
   constructor() {
@@ -123,6 +214,7 @@ window.addEventListener('mousemove', e => {
   for(let i=0;i<count;i++){
     trailStars.push(new TrailStar(e.clientX, e.clientY));
   }
+
 });
 
 // ----- Resize -----
@@ -170,6 +262,7 @@ function closeAllStarMessages() {
 interactiveStars.forEach(star => {
   star.addEventListener("click", (e) => {
     e.preventDefault();
+    playClickSound();
     const willOpen = !star.classList.contains("is-open");
     closeAllStarMessages();
     if (willOpen) star.classList.add("is-open");
@@ -177,13 +270,18 @@ interactiveStars.forEach(star => {
 
   star.addEventListener("touchstart", (e) => {
     e.preventDefault();
+    playClickSound();
     const willOpen = !star.classList.contains("is-open");
     closeAllStarMessages();
     if (willOpen) star.classList.add("is-open");
   }, { passive: false });
 
-  star.addEventListener("mouseenter", () => positionStarMessage(star));
-  star.addEventListener("focus", () => positionStarMessage(star));
+  star.addEventListener("mouseenter", () => {
+    positionStarMessage(star);
+  });
+  star.addEventListener("focus", () => {
+    positionStarMessage(star);
+  });
   star.addEventListener("click", () => positionStarMessage(star));
   star.addEventListener("touchstart", () => positionStarMessage(star), { passive: true });
 });
@@ -393,6 +491,7 @@ function closeDailyModal() {
 
 if (moonButton) {
   moonButton.addEventListener("click", () => {
+    playClickSound();
     if (!canOpenDailyMessage()) {
       showMoonToast("No messages available yet.");
       return;
@@ -402,7 +501,10 @@ if (moonButton) {
 }
 
 if (dailyCancel) {
-  dailyCancel.addEventListener("click", closeDailyModal);
+  dailyCancel.addEventListener("click", () => {
+    playClickSound();
+    closeDailyModal();
+  });
 }
 
 if (dailyOverlay) {
@@ -413,6 +515,7 @@ if (dailyOverlay) {
 
 if (dailyOpen) {
   dailyOpen.addEventListener("click", () => {
+    playClickSound();
     if (!canOpenDailyMessage()) return;
     const opened = Math.min(getOpenedCount() + 1, TOTAL_MESSAGES);
     setOpenedCount(opened);
@@ -582,6 +685,7 @@ loadEssayMessages();
 
 if (essayClose) {
   essayClose.addEventListener("click", () => {
+    playClickSound();
     if (!essayOverlay) return;
     essayOverlay.classList.remove("is-open");
     essayOverlay.setAttribute("aria-hidden", "true");
@@ -599,6 +703,7 @@ if (essayOverlay) {
 
 if (mailButton && mailPanel) {
   mailButton.addEventListener("click", () => {
+    playClickSound();
     mailPanel.classList.toggle("is-visible");
     mailPanel.setAttribute("aria-hidden", mailPanel.classList.contains("is-visible") ? "false" : "true");
     mailButton.classList.toggle("is-open", mailPanel.classList.contains("is-visible"));
