@@ -771,7 +771,6 @@ body.modal-blur > *:not(.daily-overlay):not(.essay-overlay) {
   justify-content: flex-end;
   margin-top: 14px;
 }
-
 .essay-content {
   overflow-y: auto;
   max-height: calc(80vh - 140px);
