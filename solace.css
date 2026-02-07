@@ -467,7 +467,7 @@ html, body {
 .debug-panel {
   position: fixed;
   left: clamp(12px, 3vw, 24px);
-  bottom: calc(clamp(12px, 3vw, 24px) + 36px);
+  bottom: calc(clamp(12px, 3vw, 24px) + 52px);
   width: min(80vw, 320px);
   padding: 10px 12px;
   border-radius: 12px;
