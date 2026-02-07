@@ -607,7 +607,6 @@ body.modal-blur > *:not(.daily-overlay) {
   filter: blur(6px);
   transition: filter 0.2s ease;
 }
-
 body.modal-blur > *:not(.daily-overlay):not(.essay-overlay) {
   filter: blur(6px);
   transition: filter 0.2s ease;
