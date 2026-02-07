@@ -52,51 +52,35 @@ function playShimmer() {
   playTone({ freq: 920 + Math.random() * 160, duration: 0.04, type: "sine", gain: 0.015 });
 }
 
-// ----- Background music (YouTube embed, starts on first user gesture) -----
-const bgMusicHost = document.getElementById("bg-music");
-const bgMusicVideoId = "m_7gzTRMOZ8";
-function startBackgroundMusic() {
-  if (!bgMusicHost || document.getElementById("bg-music-iframe")) return;
-  const iframe = document.createElement("iframe");
-  iframe.id = "bg-music-iframe";
-  iframe.width = "1";
-  iframe.height = "1";
-  iframe.allow = "autoplay";
-  iframe.src =
-    `https://www.youtube.com/embed/${bgMusicVideoId}` +
-    `?autoplay=1&loop=1&playlist=${bgMusicVideoId}&controls=0&mute=0&playsinline=1&enablejsapi=1`;
-  bgMusicHost.appendChild(iframe);
-}
-
-window.addEventListener("click", startBackgroundMusic, { once: true });
-window.addEventListener("touchstart", startBackgroundMusic, { once: true });
-
-function sendYouTubeCommand(command) {
-  const iframe = document.getElementById("bg-music-iframe");
-  if (!iframe || !iframe.contentWindow) return;
-  iframe.contentWindow.postMessage(
-    JSON.stringify({ event: "command", func: command, args: [] }),
-    "*"
-  );
-}
-
+// ----- Background music (local file) -----
+const bgMusic = document.getElementById("bg-music");
 let musicPaused = false;
 const musicButton = document.querySelector(".music-button");
+
+function tryAutoPlayMusic() {
+  if (!bgMusic) return;
+  const playPromise = bgMusic.play();
+  if (playPromise && typeof playPromise.catch === "function") {
+    playPromise.catch(() => {
+      // Autoplay may be blocked; will start on first user gesture.
+    });
+  }
+}
+
+tryAutoPlayMusic();
+window.addEventListener("click", tryAutoPlayMusic, { once: true });
+window.addEventListener("touchstart", tryAutoPlayMusic, { once: true });
+
 if (musicButton) {
   musicButton.addEventListener("click", () => {
     playClickSound();
-    if (!document.getElementById("bg-music-iframe")) {
-      startBackgroundMusic();
-      musicPaused = false;
-      musicButton.classList.remove("is-paused");
-      return;
-    }
+    if (!bgMusic) return;
     if (musicPaused) {
-      sendYouTubeCommand("playVideo");
+      bgMusic.play();
       musicPaused = false;
       musicButton.classList.remove("is-paused");
     } else {
-      sendYouTubeCommand("pauseVideo");
+      bgMusic.pause();
       musicPaused = true;
       musicButton.classList.add("is-paused");
     }
